@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smoothie Nutritional Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Smoothie Nutritional Calculator</h1>
+        <form id="smoothie-form">
+            <div class="ingredient">
+                <label for="ingredient">Ingredient:</label>
+                <select id="ingredient">
+                    <option value="" disabled selected>Select an ingredient</option>
+                    <option value="banana">Banana (100g)</option>
+                    <option value="apple">Apple (100g)</option>
+                    <option value="spinach">Spinach (100g)</option>
+                    <option value="almond_milk">Almond Milk (1 cup)</option>
+                    <option value="yogurt">Greek Yogurt (100g)</option>
+                </select>
+            </div>
+            <div class="quantity">
+                <label for="quantity">Quantity (g or ml):</label>
+                <input type="number" id="quantity" min="1">
+            </div>
+            <button type="button" id="add-ingredient">Add Ingredient</button>
+        </form>
+        <div id="summary">
+            <h2>Smoothie Summary</h2>
+            <ul id="ingredient-list"></ul>
+            <p><strong>Total Calories:</strong> <span id="total-calories">0</span> kcal</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+// Ingredient database with nutritional values per 100g or per unit
+const ingredientData = {
+    banana: { calories: 89, protein: 1.1, fats: 0.3, carbs: 23 },
+    apple: { calories: 52, protein: 0.3, fats: 0.2, carbs: 14 },
+    spinach: { calories: 23, protein: 2.9, fats: 0.4, carbs: 3.6 },
+    almond_milk: { calories: 30, protein: 1, fats: 2.5, carbs: 1.5 },
+    yogurt: { calories: 59, protein: 10, fats: 0.4, carbs: 3.6 }
+};
+
+let totalNutrients = { calories: 0, protein: 0, fats: 0, carbs: 0 };
+
+document.getElementById("add-ingredient").addEventListener("click", () => {
+    const ingredient = document.getElementById("ingredient").value;
+    const quantity = document.getElementById("quantity").value;
+
+    if (ingredient && quantity) {
+        const nutrients = ingredientData[ingredient];
+        const multiplier = quantity / 100;
+
+        // Calculate nutrients for the selected ingredient
+        const calories = nutrients.calories * multiplier;
+        const protein = nutrients.protein * multiplier;
+        const fats = nutrients.fats * multiplier;
+        const carbs = nutrients.carbs * multiplier;
+
+        // Update total nutrients
+        totalNutrients.calories += calories;
+        totalNutrients.protein += protein;
+        totalNutrients.fats += fats;
+        totalNutrients.carbs += carbs;
+
+        // Display the ingredient
+        const ingredientList = document.getElementById("ingredient-list");
+        const listItem = document.createElement("li");
+        listItem.textContent = `${quantity}g of ${ingredient} - ${calories.toFixed(2)} kcal, ${protein.toFixed(2)}g protein, ${fats.toFixed(2)}g fats, ${carbs.toFixed(2)}g carbs`;
+        ingredientList.appendChild(listItem);
+
+        // Update summary
+        document.getElementById("total-calories").textContent = totalNutrients.calories.toFixed(2);
+        document.getElementById("total-protein").textContent = totalNutrients.protein.toFixed(2);
+        document.getElementById("total-fats").textContent = totalNutrients.fats.toFixed(2);
+        document.getElementById("total-carbs").textContent = totalNutrients.carbs.toFixed(2);
+
+        // Reset input fields
+        document.getElementById("ingredient").value = "";
+        document.getElementById("quantity").value = "";
+    } else {
+        alert("Please select an ingredient and enter the quantity.");
+    }
+});

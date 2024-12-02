@@ -1,0 +1,37 @@
+// Ingredient database with calories per 100g or per unit
+const ingredientData = {
+    banana: 89, // kcal per 100g
+    apple: 52, // kcal per 100g
+    spinach: 23, // kcal per 100g
+    almond_milk: 30, // kcal per 1 cup (~240ml)
+    yogurt: 59 // kcal per 100g
+};
+
+let totalCalories = 0;
+
+document.getElementById("add-ingredient").addEventListener("click", () => {
+    const ingredient = document.getElementById("ingredient").value;
+    const quantity = document.getElementById("quantity").value;
+
+    if (ingredient && quantity) {
+        // Calculate calories for the selected ingredient
+        const caloriesPerUnit = ingredientData[ingredient];
+        const calories = (caloriesPerUnit / 100) * quantity;
+
+        // Add ingredient to the list
+        const ingredientList = document.getElementById("ingredient-list");
+        const listItem = document.createElement("li");
+        listItem.textContent = `${quantity}g of ${ingredient} - ${calories.toFixed(2)} kcal`;
+        ingredientList.appendChild(listItem);
+
+        // Update total calories
+        totalCalories += calories;
+        document.getElementById("total-calories").textContent = totalCalories.toFixed(2);
+
+        // Reset input fields
+        document.getElementById("ingredient").value = "";
+        document.getElementById("quantity").value = "";
+    } else {
+        alert("Please select an ingredient and enter the quantity.");
+    }
+});
